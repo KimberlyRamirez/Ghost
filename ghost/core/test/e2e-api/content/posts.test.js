@@ -5,13 +5,17 @@ const testUtils = require('../../utils');
 const models = require('../../../core/server/models');
 
 const {agentProvider, fixtureManager, matchers} = require('../../utils/e2e-framework');
-const {anyArray, anyContentVersion, anyEtag, anyUuid, anyISODateTimeWithTZ} = matchers;
+const {anyArray, anyContentVersion, anyEtag, anyUuid, anyISODateTimeWithTZ, anyNumber} = matchers;
 
 const postMatcher = {
     published_at: anyISODateTimeWithTZ,
     created_at: anyISODateTimeWithTZ,
     updated_at: anyISODateTimeWithTZ,
     uuid: anyUuid
+};
+
+const readingTimeMatcher = {
+    reading_time: anyNumber
 };
 
 const postMatcheShallowIncludes = Object.assign(
@@ -341,5 +345,17 @@ describe('Posts Content API', function () {
             .get(`posts/?fields=plaintext`)
             .expectStatus(200)
             .matchBodySnapshot();
+    });
+    it('Can request reading_time without html as field', async function () {
+        await agent
+            .get('posts/?fields=reading_time')
+            .expectStatus(200)
+            .matchHeaderSnapshot({
+                etag: anyEtag
+            })
+            .matchBodySnapshot({
+                posts: new Array(10)
+                    .fill(readingTimeMatcher)
+            });
     });
 });

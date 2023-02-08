@@ -53,6 +53,8 @@ module.exports.forPost = (frame, model, attrs) => {
 
     // reading_time still only works when used along with formats=html.
 
+    // reading_time bug fixed to work without html format
+    // see ghost/core/core/server/models/base/plugins/crud.js for details
     if (!Object.prototype.hasOwnProperty.call(frame.options, 'columns') ||
         (frame.options.columns.includes('reading_time'))) {
         if (attrs.html) {
@@ -62,6 +64,10 @@ module.exports.forPost = (frame, model, attrs) => {
                 additionalImages += 1;
             }
             attrs.reading_time = readingMinutes(attrs.html, additionalImages);
+        }
+
+        if (frame.options.columns && frame.options.columns.includes('reading_time') && !frame.options.columns.includes('html')) {
+            delete attrs.html;
         }
     }
 };
