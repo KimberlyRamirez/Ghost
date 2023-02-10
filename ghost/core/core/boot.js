@@ -280,6 +280,7 @@ async function initServices({config}) {
     const slack = require('./server/services/slack');
     const {mega} = require('./server/services/mega');
     const webhooks = require('./server/services/webhooks');
+    const realTimeComments = require('./server/services/realTimeComments');
     const appService = require('./frontend/services/apps');
     const limits = require('./server/services/limits');
     const apiVersionCompatibility = require('./server/services/api-version-compatibility');
@@ -318,6 +319,7 @@ async function initServices({config}) {
         emailService.init(),
         mega.listen(),
         webhooks.listen(),
+        realTimeComments.listen(),
         appService.init(),
         apiVersionCompatibility.init(),
         scheduling.init({
